@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import urllib
+import urllib2
 import json
 import os
 
@@ -41,12 +42,12 @@ def processRequest(req):
         res = makeWebhookResult(data)
         return res
     if req.get("result").get("action") == "apicem":
-        baseurl = "https://sandboxapic.cisco.com:443/api/v1/ticket"
-        payload = "{ \n    \"username\" : \"devnetuser\",\n\"password\" : \"Cisco123!\"\n}\n"
-        headers = {
-            'content-type': "application/json",
-            'cache-control': "no-cache",
-            }
+        url = "https://sandboxapic.cisco.com:443/api/v1/ticket"
+        data = {'username' : 'devnetuser', 'password' : 'Cisco123!'}
+        request = urllib2.Request(url, data)
+        request.add_header('Content-Type','application/json')
+        res = urllib2.urlopen(request, json.dumps(data)).read()
+        print (res)
         return{}        
 
 def makeYqlQuery(req):
