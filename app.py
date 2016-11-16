@@ -30,9 +30,10 @@ def webhook():
 
 
 def processRequest(req):
+    '''
     res = "Ho Ho Ho"
     return res    
-    '''
+    
     if req.get("result").get("action") == "apicem":
         
         url = "https://sandboxapic.cisco.com:443/api/v1/ticket"
