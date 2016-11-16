@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import urllib
-import os, urllib2
+import os
 import json
 
 
@@ -44,10 +44,10 @@ def processRequest(req):
     if req.get("result").get("action") == "apicem":
         url = "https://sandboxapic.cisco.com:443/api/v1/ticket"
         data = {'username' : 'devnetuser', 'password' : 'Cisco123!'}
-        request = urllib2.Request(url, data)
-        request.add_header('Content-Type','application/json')
-        res = urllib2.urlopen(request, json.dumps(data)).read()
-        print (res)
+    #    request = urllib2.Request(url, data)
+    #    request.add_header('Content-Type','application/json')
+   #     res = urllib.urlopen(request, json.dumps(data)).read()
+    #    print (res)
         return{}        
 
 def makeYqlQuery(req):
