@@ -30,8 +30,6 @@ def webhook():
 
 
 def processRequest(req):
-    if req.get("result").get("action") != "yahooWeatherForecast":
-        return {}
     if req.get("result").get("action") == "yahooWeatherForecast":
         baseurl = "https://query.yahooapis.com/v1/public/yql?"
         yql_query = makeYqlQuery(req)
@@ -42,14 +40,37 @@ def processRequest(req):
         data = json.loads(result)
         res = makeWebhookResult(data)
         return res
+    
     if req.get("result").get("action") == "apicem":
         url = "https://sandboxapic.cisco.com:443/api/v1/ticket"
-        data = {'username' : 'devnetuser', 'password' : 'Cisco123!'}
-    #    request = urllib2.Request(url, data)
-    #    request.add_header('Content-Type','application/json')
-   #     res = urllib.urlopen(request, json.dumps(data)).read()
-    #    print (res)
-        return{}        
+        payload = "{ \n    \"username\" : \"devnetuser\",\n\"password\" : \"Cisco123!\"\n}\n"
+        headers = {
+           'content-type': "application/json",
+           'cache-control': "no-cache",
+           }
+        response = requests.request("POST", url, data=payload, headers=headers)
+        print(response.text)
+        s = json.loads(response.text)
+        
+        apicurl = "https://sandboxapic.cisco.com:443/api/v1/network-device/1/14"
+        apicheaders = {
+           'x-auth-token': s["response"]["serviceTicket"],
+            'cache-control': "no-cache",
+         }
+        apicresponse = requests.request("GET", apicurl, headers=apicheaders)
+        switchlist=""
+        for switch in apicresponse:
+            switchlist = switchlist +" "+ "Switch_type" +" "+ str(switch['type']) +'\n'
+        return {
+        "speech": switchlist,
+        "displayText": switchlist,
+        # "data": data,
+        # "contextOut": [],
+        "source": "akshayapi"
+        }
+        
+        
+    return {}
 
 def makeYqlQuery(req):
     result = req.get("result")
@@ -97,7 +118,7 @@ def makeWebhookResult(data):
         "displayText": speech,
         # "data": data,
         # "contextOut": [],
-        "source": "apiai-weather-webhook-sample"
+        "source": "akshayapi"
     }
 
 
