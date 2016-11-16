@@ -3,6 +3,8 @@
 import urllib
 import json
 import os
+import requests
+import datetime
 
 from flask import Flask
 from flask import request
@@ -77,7 +79,7 @@ def makeWebhookResult(data):
 
     # print(json.dumps(item, indent=4))
 
-    speech = "Today in " + location.get('city') + ": " + condition.get('text') + \
+    speech = "Today at " + location.get('city') + ": " + condition.get('text') + \
              ", the temperature is " + condition.get('temp') + " " + units.get('temperature')
 
     print("Response:")
