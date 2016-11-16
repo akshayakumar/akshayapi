@@ -30,17 +30,6 @@ def webhook():
 
 
 def processRequest(req):
-    if req.get("result").get("action") == "yahooWeatherForecast":
-        baseurl = "https://query.yahooapis.com/v1/public/yql?"
-        yql_query = makeYqlQuery(req)
-        if yql_query is None:
-            return {}
-        yql_url = baseurl + urllib.urlencode({'q': yql_query}) + "&format=json"
-        result = urllib.urlopen(yql_url).read()
-        data = json.loads(result)
-        res = makeWebhookResult(data)
-        return res
-    
     if req.get("result").get("action") == "apicem":
         url = "https://sandboxapic.cisco.com:443/api/v1/ticket"
         payload = "{ \n    \"username\" : \"devnetuser\",\n\"password\" : \"Cisco123!\"\n}\n"
@@ -61,15 +50,26 @@ def processRequest(req):
         switchresponse = json.loads(apicresponse.text)
         switchlist=""
         for switch in switchresponse:
-            switchlist = switchlist +" "+ "Switch_type" +" "+ str(switch['type']) +'\n'
-        return {
+            switchlist = switchlist +" "+ "Switch_type" +" "+ str(switch['type'])
+        res = {
         "speech": switchlist,
         "displayText": switchlist,
         # "data": data,
         # "contextOut": [],
         "source": "akshayapi"
         }
-        
+        return res
+    
+    if req.get("result").get("action") == "yahooWeatherForecast":
+        baseurl = "https://query.yahooapis.com/v1/public/yql?"
+        yql_query = makeYqlQuery(req)
+        if yql_query is None:
+            return {}
+        yql_url = baseurl + urllib.urlencode({'q': yql_query}) + "&format=json"
+        result = urllib.urlopen(yql_url).read()
+        data = json.loads(result)
+        res = makeWebhookResult(data)
+        return res    
         
     return {}
 
