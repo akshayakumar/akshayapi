@@ -31,6 +31,7 @@ def webhook():
 
 def processRequest(req):
     if req.get("result").get("action") == "apicem":
+        '''
         url = "https://sandboxapic.cisco.com:443/api/v1/ticket"
         payload = "{ \n    \"username\" : \"devnetuser\",\n\"password\" : \"Cisco123!\"\n}\n"
         headers = {
@@ -58,6 +59,8 @@ def processRequest(req):
         # "contextOut": [],
         "source": "akshayapi"
         }
+        '''
+        res = "Ho Ho Ho"
         return res
     
     if req.get("result").get("action") == "yahooWeatherForecast":
