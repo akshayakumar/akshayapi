@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 import urllib
-import urllib2
+import os, urllib2
 import json
-import os
+
 
 from flask import Flask
 from flask import request
