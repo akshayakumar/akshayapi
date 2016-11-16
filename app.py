@@ -58,8 +58,9 @@ def processRequest(req):
             'cache-control': "no-cache",
          }
         apicresponse = requests.request("GET", apicurl, headers=apicheaders)
+        switchresponse = json.loads(apicresponse.text)
         switchlist=""
-        for switch in apicresponse:
+        for switch in switchresponse:
             switchlist = switchlist +" "+ "Switch_type" +" "+ str(switch['type']) +'\n'
         return {
         "speech": switchlist,
