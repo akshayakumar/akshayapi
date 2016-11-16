@@ -3,8 +3,6 @@
 import urllib
 import json
 import os
-import requests
-import datetime
 
 from flask import Flask
 from flask import request
