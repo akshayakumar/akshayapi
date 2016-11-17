@@ -50,7 +50,7 @@ def processRequest(req):
             switchresponse = json.loads(apicresponse.text)
             switchlist=" Sure, Here is the list of devices in the network.." + "\n"
             for switch in switchresponse['response']:
-                switchlist = switchlist + "  "+ switch['type']+" Uptime: "+str(switch['upTime'])+" Version:"+str(switch['softwareVersion'])+"\n"
+                switchlist = switchlist + "Hostname: "+ switch['hostname']+" IP-Address: "+ switch['managementIpAddress']+" DeviceType: "+ switch['type']+" Version:"+str(switch['softwareVersion'])+"\n"
             res = {
             "speech": switchlist,
             "displayText": switchlist,
