@@ -59,7 +59,6 @@ def processRequest(req):
             "source": "akshayapi"
             }
             return res
-        return {}
     
     if req.get("result").get("action") == "yahooWeatherForecast":
         baseurl = "https://query.yahooapis.com/v1/public/yql?"
