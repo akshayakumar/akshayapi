@@ -41,26 +41,26 @@ def processRequest(req):
         response = requests.request("POST", url, data=payload, headers=headers)
         print(response.text)
         s = json.loads(response.text)
-        
-        url = "https://sandboxapic.cisco.com:443/api/v1/network-device/1/14"
-        headers = {
-           'x-auth-token': s["response"]["serviceTicket"],
-            'cache-control': "no-cache",
-         }
-        apicresponse = requests.request("GET", url, headers=headers)
-        switchresponse = json.loads(apicresponse.text)
-        switchlist=" "
-        for switch in switchresponse['response']:
-            switchlist = switchlist +" "+ "Switch_type" +" "+ switch['type'] + " "+"\n"
-        res = {
-        "speech": switchlist,
-        "displayText": switchlist,
-        # "data": data,
-        # "contextOut": [],
-        "source": "akshayapi"
-        }
-        return res 
-        
+        if req.get("contexts").get("parameters").get("needinfo") == "devices":
+            url = "https://sandboxapic.cisco.com:443/api/v1/network-device/1/14"
+            headers = {
+               'x-auth-token': s["response"]["serviceTicket"],
+               'cache-control': "no-cache",
+            }
+            apicresponse = requests.request("GET", url, headers=headers)
+            switchresponse = json.loads(apicresponse.text)
+            switchlist=" "
+            for switch in switchresponse['response']:
+                switchlist = switchlist +" "+ "Switch_type" +" "+ switch['type'] + " "+"\n"
+            res = {
+            "speech": switchlist,
+            "displayText": switchlist,
+            # "data": data,
+            # "contextOut": [],
+            "source": "akshayapi"
+            }
+            return res
+        return {}
     
     if req.get("result").get("action") == "yahooWeatherForecast":
         baseurl = "https://query.yahooapis.com/v1/public/yql?"
