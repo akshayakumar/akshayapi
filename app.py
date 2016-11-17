@@ -30,7 +30,6 @@ def webhook():
 
 
 def processRequest(req):
-   
     if req.get("result").get("action") == "apicem":
         url = "https://sandboxapic.cisco.com:443/api/v1/ticket"
         payload = "{ \n    \"username\" : \"devnetuser\",\n\"password\" : \"Cisco123!\"\n}\n"
@@ -41,7 +40,7 @@ def processRequest(req):
         response = requests.request("POST", url, data=payload, headers=headers)
         print(response.text)
         s = json.loads(response.text)
-        if req.get("contexts").get("parameters").get("needinfo") == "devices":
+        if req.get("result").get("parameters").get("needinfo") == "devices":
             url = "https://sandboxapic.cisco.com:443/api/v1/network-device/1/14"
             headers = {
                'x-auth-token': s["response"]["serviceTicket"],
