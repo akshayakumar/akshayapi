@@ -48,9 +48,9 @@ def processRequest(req):
             }
             apicresponse = requests.request("GET", url, headers=headers)
             switchresponse = json.loads(apicresponse.text)
-            switchlist=" "
+            switchlist=" Sure, This is the list of devices in the network.." + "\n"
             for switch in switchresponse['response']:
-                switchlist = switchlist +" "+ "Switch_type" +" "+ switch['type'] + " "+"\n"
+                switchlist = "  "+ switch['type'] + " "+"\n"
             res = {
             "speech": switchlist,
             "displayText": switchlist,
