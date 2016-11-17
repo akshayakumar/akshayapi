@@ -12,13 +12,13 @@ from flask import make_response
 # Flask app should start in global layout
 app = Flask(__name__)
 
-
 @app.route('/webhook', methods=['POST'])
+
 def webhook():
     req = request.get_json(silent=True, force=True)
 
-    print("Request:")
-    print(json.dumps(req, indent=4))
+    #print("Request:")
+    #print(json.dumps(req, indent=4))
 
     res = processRequest(req)
 
@@ -30,12 +30,8 @@ def webhook():
 
 
 def processRequest(req):
-    '''
-    res = "Ho Ho Ho"
-    return res    
-    
+   
     if req.get("result").get("action") == "apicem":
-        
         url = "https://sandboxapic.cisco.com:443/api/v1/ticket"
         payload = "{ \n    \"username\" : \"devnetuser\",\n\"password\" : \"Cisco123!\"\n}\n"
         headers = {
@@ -46,16 +42,16 @@ def processRequest(req):
         print(response.text)
         s = json.loads(response.text)
         
-        apicurl = "https://sandboxapic.cisco.com:443/api/v1/network-device/1/14"
-        apicheaders = {
+        url = "https://sandboxapic.cisco.com:443/api/v1/network-device/1/14"
+        headers = {
            'x-auth-token': s["response"]["serviceTicket"],
             'cache-control': "no-cache",
          }
-        apicresponse = requests.request("GET", apicurl, headers=apicheaders)
+        apicresponse = requests.request("GET", url, headers=headers)
         switchresponse = json.loads(apicresponse.text)
-        switchlist=""
-        for switch in switchresponse:
-            switchlist = switchlist +" "+ "Switch_type" +" "+ str(switch['type'])
+        switchlist=" "
+        for switch in switchresponse['response']:
+            switchlist = switchlist +" "+ "Switch_type" +" "+ switch['type'] + " "+"\n"
         res = {
         "speech": switchlist,
         "displayText": switchlist,
@@ -63,17 +59,22 @@ def processRequest(req):
         # "contextOut": [],
         "source": "akshayapi"
         }
-    '''
+        return res 
+        
     
     if req.get("result").get("action") == "yahooWeatherForecast":
         baseurl = "https://query.yahooapis.com/v1/public/yql?"
         yql_query = makeYqlQuery(req)
+        print "yqlquery" + "  " + str(type(yql_query))
         if yql_query is None:
             return {}
         yql_url = baseurl + urllib.urlencode({'q': yql_query}) + "&format=json"
+        print "yqlquery" + "  " + str(type(yql_url))
         result = urllib.urlopen(yql_url).read()
         data = json.loads(result)
+        print "data" + "  " + str(type(data))
         res = makeWebhookResult(data)
+        print "res" + "  " + str(type(res))
         return res    
         
     return {}
@@ -116,8 +117,8 @@ def makeWebhookResult(data):
     speech = "Today at " + location.get('city') + ": " + condition.get('text') + \
              ", the temperature is " + condition.get('temp') + " " + units.get('temperature')
 
-    print("Response:")
-    print(speech)
+   # print("Response:")
+    #print(speech)
 
     return {
         "speech": speech,
