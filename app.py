@@ -59,7 +59,30 @@ def processRequest(req):
             "source": "akshayapi"
             }
             return res
-    
+
+        if req.get("result").get("parameters").get("needinfo") == "clients":
+            url = "https://sandboxapic.cisco.com:443/api/v1/host?limit=100&offset=1"
+            headers = {
+               'x-auth-token': s["response"]["serviceTicket"],
+               'cache-control': "no-cache",
+            }
+            apicresponse = requests.request("GET", url, headers=headers)
+            clientresponse = json.loads(apicresponse.text)
+            clientlist=" Sure, Here is the list of clients in the network.." + "\n"
+            for client in clientresponse['response']:
+                if client['hostType'] == "wired":
+                    clientlist = clientlist + " Wired Client IP Address:"+ client['hostIp']+" Client Devicetype:"+client['hostType']+" Swith IP :"+str(client['connectedNetworkDeviceIpAddress'])+"\n"
+                if client['hostType'] == "wireless":
+                    clientlist = clientlist + " Wireless Client IP Address:"+ client['hostIp']+" Client Devicetype:"+client['hostType']+" Access Point IP:"+str(client['connectedNetworkDeviceIpAddress'])+"\n"
+            
+            res = {
+            "speech": clientlist,
+            "displayText": clientlist,
+            # "data": data,
+            # "contextOut": [],
+            "source": "akshayapi"
+            }
+            return res
     if req.get("result").get("action") == "yahooWeatherForecast":
         baseurl = "https://query.yahooapis.com/v1/public/yql?"
         yql_query = makeYqlQuery(req)
