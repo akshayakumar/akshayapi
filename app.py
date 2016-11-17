@@ -83,6 +83,54 @@ def processRequest(req):
             "source": "akshayapi"
             }
             return res
+        if req.get("result").get("parameters").get("needinfo") == "apps":
+            url = "https://sandboxapic.cisco.com:443/api/v1/application"
+            headers = {
+                'x-auth-token': s["response"]["serviceTicket"],
+                'cache-control': "no-cache",
+            }
+            apicresponse = requests.request("GET", url, headers=headers)
+            appsresponse = json.loads(apicresponse.text)
+            appslist = " Sure, Here is the list of application configured in network QoS.." + "\n"
+            for app in appsresponse['response']:
+                    appslist = appslist + app['name'] +", "
+
+            appslist = appslist + "\n"+ "\n"+ "For more information about specific application ask: appinfo <Application name>"
+
+            res = {
+                "speech": appslist,
+                "displayText": appslist,
+                # "data": data,
+                # "contextOut": [],
+                "source": "akshayapi"
+            }
+            return res
+        if req.get("result").get("parameters").get("needinfo") == "appinfo":
+            url = "https://sandboxapic.cisco.com:443/api/v1/application?name="+req.get("result").get("parameters").get("appname")
+            headers = {
+                'x-auth-token': s["response"]["serviceTicket"],
+                'cache-control': "no-cache",
+            }
+            apicresponse = requests.request("GET", url, headers=headers)
+            appresponse = json.loads(apicresponse.text)
+            if appresponse['response'] != 'null':
+                for app in appresponse['response']:
+                    appinfo = " Sure, Here is the information about the application"+"\n"
+                    appinfo = appinfo + "Name: " + app['name']+ "\n"+ ",  Category: "+ app['category']+",  Traffic Class: "+app['trafficClass']+",  Protocol: "+app['appProtocol']
+                    if app['appProtocol']=="tcp":
+                         appinfo = appinfo + ",TCP Port:"+app['tcpPorts']
+                    if app['appProtocol'] == "udp":
+                         appinfo = appinfo + ",UDP Port:" + app['udpPorts']
+            else:
+                appinfo = "Application doesn't exist"
+            res = {
+                    "speech": appinfo,
+                    "displayText": appinfo,
+                    # "data": data,
+                    # "contextOut": [],
+                    "source": "akshayapi"
+            }
+            return res
     if req.get("result").get("action") == "yahooWeatherForecast":
         baseurl = "https://query.yahooapis.com/v1/public/yql?"
         yql_query = makeYqlQuery(req)
